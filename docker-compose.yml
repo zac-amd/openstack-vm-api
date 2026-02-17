@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: openstack-vm-api
+    ports:
+      - "8000:8000"
+    environment:
+      - API_TITLE=OpenStack VM Lifecycle API
+      - API_VERSION=1.0.0
+      - DEBUG=false
+      - API_KEY=${API_KEY:-dev-api-key-change-in-production}
+      - DATABASE_URL=sqlite+aiosqlite:///./data/openstack_vm.db
+      - USE_MOCK_OPENSTACK=${USE_MOCK_OPENSTACK:-true}
+      # OpenStack credentials (required when USE_MOCK_OPENSTACK=false)
+      - OS_AUTH_URL=${OS_AUTH_URL:-}
+      - OS_PROJECT_NAME=${OS_PROJECT_NAME:-}
+      - OS_PROJECT_DOMAIN_NAME=${OS_PROJECT_DOMAIN_NAME:-Default}
+      - OS_USERNAME=${OS_USERNAME:-}
+      - OS_PASSWORD=${OS_PASSWORD:-}
+      - OS_USER_DOMAIN_NAME=${OS_USER_DOMAIN_NAME:-Default}
+      - OS_REGION_NAME=${OS_REGION_NAME:-RegionOne}
+    volumes:
+      - api-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional: PostgreSQL for production
+  # Uncomment if you want to use PostgreSQL instead of SQLite
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: openstack-vm-db
+  #   environment:
+  #     - POSTGRES_USER=openstack
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+  #     - POSTGRES_DB=openstack_vm
+  #   volumes:
+  #     - postgres-data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U openstack -d openstack_vm"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+volumes:
+  api-data:
+    driver: local
+  # postgres-data:
+  #   driver: local
+
+networks:
+  default:
+    name: openstack-vm-network
