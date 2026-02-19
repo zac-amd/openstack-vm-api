@@ -6,10 +6,10 @@ This document outlines the planned features and enhancements for the OpenStack V
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                              ROADMAP                                     │
+│                              ROADMAP                                    │
 ├─────────────┬─────────────┬─────────────┬─────────────┬─────────────────┤
 │   Phase 1   │   Phase 2   │   Phase 3   │   Phase 4   │    Phase 5      │
-│   Current   │   Q2 2024   │   Q3 2024   │   Q4 2024   │    2025+        │
+│   Current   │   Q2 2026   │   Q3 2026   │   Q4 2026   │    2027+        │
 │     MVP     │  Security   │   Scale     │  Advanced   │   Enterprise    │
 │             │  & Auth     │  & Perf     │  Features   │                 │
 └─────────────┴─────────────┴─────────────┴─────────────┴─────────────────┘
